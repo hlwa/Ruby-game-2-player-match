@@ -13,6 +13,9 @@ class Game
     @player2 = p2
     @start_life = p1.life
     @turn = 0
+    @active_user = p1
+    @inactive_user = p2
+    @midman = p2
   end
 
   def get_num
@@ -25,7 +28,9 @@ class Game
 
   def game_start
     #if both palyer1 & player2 survive-----------------------------------------------------------------
-    while @player1.life >0 && @player2.life >0 do
+    while @player1.life >0 || @player2.life >0
+
+      
       # ------------player1's turn
       if @turn != 0
         puts "----NEW TURN----"
@@ -34,101 +39,31 @@ class Game
       num2 = self.get_num
       right_answer = num1 + num2
 
-      puts "#{player1.name}, what does #{num1} plus #{num2} equal?"
+      puts "#{@active_user.name}, what does #{num1} plus #{num2} equal?"
       answer = $stdin.gets.chomp
       
       #if right answer
       if answer.to_i == right_answer.to_i
-        puts "#{player1.name}: Yes! You are correct!"
-        self.get_score
-      else      #if wrong answer
-        player1.life -= 1
-        puts "#{player1.name}: Seriously? Wrong!"
-        self.get_score
-      end
-      # ------------player2's turn
-      if @turn != 0
-        puts "----NEW TURN----"
-      end
-      num1 = self.get_num
-      num2 = self.get_num
-      right_answer = num1 + num2
-      puts "#{player2.name}, what does #{num1} plus #{num2} equal?"
-      answer = $stdin.gets.chomp
-      #if right answer
-      if answer.to_i == right_answer.to_i
-        puts "#{player2.name}: Yes! You are correct!"
+        puts "#{@active_user.name}: Yes! You are correct!"
         self.get_score
       #if wrong answer
-      else
-        player2.life -= 1
-        if player2.life == 0
-          puts "----GAME OVER----"
-          puts "Good bye!"
-          exit
-        end
-        puts "#{player2.name}: Seriously? Wrong!"
+      else      
+        @active_user.life -= 1
+        puts "#{@active_user.name}: Seriously? Wrong!"
         self.get_score
       end
       @turn += 1
-       # ------------one whole turn
-    end
-
-    #if only palyer1 survive-----------------------------------------------------------------
-    while @player1.life >0 && @player2.life == 0
-     # ------------player1's turn
-      if @turn != 0
-        puts "----NEW TURN----"
+      if @player1.life == 0 && @player2.life == 0
+        puts "----GAME OVER----"
+        puts "Good bye!"
+        exit
       end
-      num1 = self.get_num
-      num2 = self.get_num
-      right_answer = num1 + num2
-      puts "#{player1.name}, what does #{num1} plus #{num2} equal?"
-      answer = $stdin.gets.chomp
-      #if right answer
-      if answer.to_i == right_answer.to_i
-        puts "#{player1.name}: Yes! You are correct!"
-        self.get_score
-      #if wrong answer
-      else
-        player1.life -= 1
-        if player1.life == 0
-          puts "----GAME OVER----"
-          puts "Good bye!"
-          exit
-        end
-        puts "#{player1.name}: Seriously? Wrong!"
-        self.get_score
+      if @inactive_user.life >0
+        @midman = @active_user
+        @active_user = @inactive_user
+        @inactive_user = @midman
       end
     end
-
-    #if only palyer2 survive-----------------------------------------------------------------
-    while @player2.life >0 && @player1.life == 0 do
-      # ------------player1's turn
-       if @turn != 0
-         puts "----NEW TURN----"
-       end
-       num1 = self.get_num
-       num2 = self.get_num
-       right_answer = num1 + num2
-       puts "#{player2.name}, what does #{num1} plus #{num2} equal?"
-       answer = $stdin.gets.chomp
-       #if right answer
-       if answer == right_answer
-         puts "#{player2.name}: Yes! You are correct!"
-         self.get_score
-       #if wrong answer
-       else
-         player2.life -= 1
-         if player2.life == 0
-          puts "----GAME OVER----"
-          puts "Good bye!"
-          exit
-         end
-         puts "#{player2.name}: Seriously? Wrong!"
-         self.get_score
-       end
-     end
   end
 end
 
